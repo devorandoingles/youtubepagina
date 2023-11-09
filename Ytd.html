@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Navegador YouTube - Animação e Estilo Jovem</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: Arial, sans-serif;
+        }
+        
+        #content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        
+        h1 {
+            font-size: 50px;
+            color: #ff0000;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        #videoUrlContainer {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        #videoUrl {
+            padding: 10px;
+            width: 400px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+        
+        #loadButton {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff0000;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        #fullscreenButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+    <div id="content">
+        <h1>Meu Navegador <span style="color: #ffffff">YouTube</span></h1>
+        <div id="videoUrlContainer">
+            <input type="text" id="videoUrl" placeholder="Insira a URL do vídeo">
+            <button id="loadButton" onclick="loadVideo()">Carregar Vídeo</button>
+        </div>
+        <div id="videoContainer"></div>
+        <button id="fullscreenButton" onclick="toggleFullscreen()">Tela Cheia</button>
+    </div>
+
+    <script>
+        var videoContainer = document.getElementById("videoContainer");
+        var fullscreenButton = document.getElementById("fullscreenButton");
+        var isFullscreen = false;
+
+        function loadVideo() {
+            var videoUrl = document.getElementById("videoUrl").value;
+            var embedUrl = getEmbedUrl(videoUrl);
+
+            var iframe = document.createElement("iframe");
+            iframe.src = embedUrl;
+            iframe.width = "841";
+            iframe.height = "474";
+            iframe.frameborder = "0";
+            iframe.allowfullscreen = true;
+            iframe.setAttribute("allow", "autoplay; encrypted-media");
+            iframe.setAttribute("allowfullscreen", "");
+
+            videoContainer.innerHTML = "";
+            videoContainer.appendChild(iframe);
+        }
+
+        function getEmbedUrl(url) {
+            var videoId = extractVideoId(url);
+            return "https://www.youtube.com/embed/" + videoId + "?autoplay=1&vq=medium";
+        }
+
+        function extractVideoId(url) {
+            var match = url.match(/(?:\?v=|\/embed\/|\.be\/)([\w\d_-]+)/);
+            return match[1];
+        }
+
+        function toggleFullscreen() {
+            if (!isFullscreen) {
+                if (videoContainer.requestFullscreen) {
+                    videoContainer.requestFullscreen();
+                } else if (videoContainer.mozRequestFullScreen) {
+                    videoContainer.mozRequestFullScreen();
+                } else if (videoContainer.webkitRequestFullscreen) {
+                    videoContainer.webkitRequestFullscreen();
+                } else if (videoContainer.msRequestFullscreen) {
+                    videoContainer.msRequestFullscreen();
+                }
+                fullscreenButton.innerText = "Sair da Tela Cheia";
+                isFullscreen = true;
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                fullscreenButton.innerText = "Tela Cheia";
+                isFullscreen = false;
+            }
+        }
+    </script>
+</body>
+</html>
